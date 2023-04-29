@@ -1,4 +1,5 @@
 import { createContext, useContext, ReactNode, useState } from "react";
+import Cart from "../Components/Cart";
 
 type CartItemsType = {
   id: number;
@@ -10,6 +11,10 @@ type CartContextType = {
   addItem: (id: number) => void;
   decreaseItem: (id: number) => void;
   removeItem: (id: number) => void;
+  cart: CartItemsType[];
+  cartItemsQuantity: number;
+  openHandler: () => void;
+  closeHandler: () => void;
 };
 
 type CartProviderProps = {
@@ -49,7 +54,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
       }
       return currentItems.map((item) => {
         if (item.id == id) {
-          return { ...item, quantity: item.quantity + 1 };
+          return { ...item, quantity: item.quantity - 1 };
         } else {
           return item;
         }
@@ -61,5 +66,16 @@ export const CartProvider = ({ children }: CartProviderProps) => {
       return currentItems.filter((item) => item.id != id);
     });
   }
-  return <CartContext.Provider value={{ getQuantity, addItem, decreaseItem, removeItem }}>{children}</CartContext.Provider>;
+  const cartItemsQuantity = cart.reduce((quantity, item) => quantity + item.quantity, 0);
+
+  const [isOpen, setIsOpen] = useState(false);
+  const openHandler = () => setIsOpen(true);
+  const closeHandler = () => setIsOpen(false);
+
+  return (
+    <CartContext.Provider value={{ getQuantity, addItem, decreaseItem, removeItem, cartItemsQuantity, cart, closeHandler, openHandler }}>
+      {children}
+      <Cart isShow={isOpen} />
+    </CartContext.Provider>
+  );
 };
