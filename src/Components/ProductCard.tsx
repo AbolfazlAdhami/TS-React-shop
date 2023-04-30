@@ -1,4 +1,4 @@
-import { Button,   Card } from "react-bootstrap";
+import { Button, Card } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useCartContex } from "../Context/CartContext";
 type ProductProps = {
